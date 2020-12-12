@@ -1,0 +1,94 @@
+Haciendo uso del test de primalidad de Miller Rabin se impleneta la siguiente funcion la cual se necesitara para genrar dos nuemros primos parte le algoritmo de RSA:
+
+`import random
+def miller_rabin(n):
+k=40
+if n == 2:
+return n
+if n == 3:
+return n
+if n == 1:
+return n
+
+if n % 2 == 0:
+    return False
+
+r, s = 0, n - 1
+while s % 2 == 0:
+    r += 1
+    s //= 2
+for _ in range(k):
+    a = random.randrange(2, n - 1)
+    x = pow(a, s, n)
+    if x == 1 or x == n - 1:
+        continue
+    for _ in range(r - 1):
+        x = pow(x, 2, n)
+        if x == n - 1:
+            break
+    else:
+        return False
+return n`
+
+Seleccionar los dos primos p y q:
+
+`primos=[]
+for i in range (0,1000):
+if miller_rabin(i):
+primos.append(i)
+
+p=primos[random.randrange(0, len(primos))]
+q=primos[random.randrange(0, len(primos))]
+
+print("p=",p,"q=",q)
+n=p*q
+print("n=",n)
+`
+
+Calculamos S haciendo uso de la función phi de Euler
+
+s=(p-1)*(q-1) print("s=",s)
+
+Seleccionamos K, un nuemro entre 1 y s que sea coprimo con S utilizando el algoritmos de euclides
+
+`print("Usando el algoritmo de Euclides hayamos K")
+
+def compute_hcf(x, y):
+if x > y:
+smaller = y
+else:
+smaller = x
+while(y):
+x, y = y, x % y
+return x
+coprimo = False
+while (coprimo==False):
+k=random.randrange(2, s)
+x=compute_hcf(s, k)
+if x == 1:
+coprimo = True
+print("K=",k)
+
+print("Clave publica= (",n,",",k,")")`
+
+La aritmética modular nos dice que existe un único número j entre 1 y s para el cual el producto jk deja un resto 1 en la división entre s. Calculamos j, es decir la clave privada.
+
+congruente = False j=n while (congruente==False): j-=1 if (j*k)%s == 1: congruente = True print("j=",j) print("clave privada=",j)
+
+Encriptar mensaje
+
+mensaje = 6000 if (mensaje<n): print("mensaje a encriptar" ,mensaje) mensaje_encriptado=(mensaje**k)%n print("mensaje a encriptado", mensaje_encriptado) desencriptar=True else: desencriptar=False print("El mensaje es demasido largo para encriptarse mensaje es mas largo que n")
+
+Desencriptar mensaje
+
+if desencriptar == True: mensaje_desencriptado=(mensaje_encriptado**j)%n print("mensaje a desencriptado",mensaje_desencriptado)
+
+Resultados
+
+Resultados = []
+
+Resultados.append((p,q,n,s,k,j,mensaje, mensaje_encriptado, mensaje_desencriptado))
+
+for i in range(len(Resultados)): print(i+1,"(p,q,s,clave privada)=(",Resultados[i][0],",",Resultados[i][1],",",Resultados[i][3],",",Resultados[i][5],")", " Clave publica=(", Resultados[i][2],",",Resultados[i][4],")", " Mensaje=",Resultados[i][6]," Mensaje Encriptado=",Resultados[i][7]," Mensaje Desencriptado=",Resultados[i][8])
+
+Archivo Original: https://colab.research.google.com/drive/1cX2oXap4sdQuPkPW31lrRF1tPWM_CFOv?authuser=1#scrollTo=udyHkFh4NhDm
